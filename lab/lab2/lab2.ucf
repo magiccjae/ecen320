@@ -1,0 +1,22 @@
+NET "buttons<0>" LOC=B18;
+NET "buttons<1>" LOC=D18;
+NET "buttons<2>" LOC=E18;
+NET "buttons<3>" LOC=H13;
+
+NET "switches<0>" LOC=G18;
+NET "switches<1>" LOC=H18;
+NET "switches<2>" LOC=K18;
+NET "switches<3>" LOC=K17;
+NET "switches<4>" LOC=L14;
+NET "switches<5>" LOC=L13;
+NET "switches<6>" LOC=N17;
+NET "switches<7>" LOC=R17;
+
+net "leds<0>" LOC=J14;
+net "leds<1>" LOC=J15;
+net "leds<2>" LOC=K15;
+net "leds<3>" LOC=K14;
+net "leds<4>" LOC=E17;
+net "leds<5>" LOC=P15;
+net "leds<6>" LOC=F4;
+net "leds<7>" LOC=R4;

@@ -1,0 +1,81 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity seven_seg_top is
+	port(
+		clk : in  std_logic;
+		sw : in std_logic_vector(7 downto 0);
+		btn : in std_logic_vector(3 downto 0);
+		seg : out std_logic_vector(6 downto 0);
+		dp : out std_logic;
+		an : out std_logic_vector(3 downto 0)
+	);
+end seven_seg_top;
+
+architecture top_arch of seven_seg_top is
+	component seven_segment_display
+		generic(
+			COUNTER_BITS: natural := 15
+		);	
+		port(
+			clk: in std_logic;
+			data_in: in std_logic_vector(15 downto 0);
+			dp_in: in std_logic_Vector(3 downto 0);
+			blank: in std_logic_vector(3 downto 0);
+			seg : out std_logic_vector(6 downto 0);
+			dp : out std_logic;
+			an : out std_logic_vector(3 downto 0)
+		);
+	end component;
+	
+	signal r_reg: unsigned(31 downto 0):=(others=>'0');
+	signal r_next: unsigned(31 downto 0);	
+	signal dp_in: std_logic_vector(3 downto 0);
+	signal data_in: std_logic_vector(15 downto 0);
+	signal blank: std_logic_vector(3 downto 0);
+	
+	begin
+		bottom_level: seven_segment_display
+		generic map(COUNTER_BITS=>15)
+		port map(clk=>clk, an=>an, seg=>seg, dp=>dp, blank=>blank,
+					data_in=>data_in, dp_in=>dp_in);
+	
+		process(clk)
+		begin
+			if (rising_edge(clk)) then
+				r_reg <= r_next;
+			end if;
+		end process;
+		-- next state
+		process(r_reg)
+		begin
+			r_next <= r_reg+1;
+		end process;		
+	
+		process(btn, sw, r_reg)
+		begin
+		
+		--write default values
+			blank <= "0000";
+			data_in <= "0000000000000000";
+			if btn(3)='1' then
+				blank <= "1111";
+				dp_in <= "0000";
+			elsif btn(2)='1' then
+				data_in <= "1011111011101111";
+				dp_in <= "0000";
+			elsif btn(1)='1' then
+				blank <= "1100";
+				data_in(7 downto 0) <= sw;
+				dp_in <= "0010";
+			elsif btn(0)='1' then
+				dp_in <= "1111";
+				data_in <= std_logic_vector(r_reg(15 downto 0));
+			else
+				data_in <= std_logic_vector(r_reg(31 downto 16));
+				dp_in <= "1000";
+			end if;
+		end process;
+		
+end top_arch;
